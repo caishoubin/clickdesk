@@ -1,39 +1,43 @@
-# Windows 实机验收
+# Windows manual verification
 
-自动化测试覆盖录制顺序、双击间隔、按住时间、取消和释放、循环等待、速度换算、文件校验与多显示器坐标换算。GitHub Actions 另行检查 Windows 程序的启动、主窗口创建和正常退出。以下实际点击与桌面交互项目仍需人工实机验证。
+Core tests cover sequence order, click timing, holds, cancellation, button release,
+loop waits, speed conversion, recording validation, and multi-monitor coordinate
+normalization. GitHub Actions also checks Windows startup, English control
+captions, and clean shutdown. The desktop interactions below still need manual checks.
 
-## 基本流程
+## Basic workflow
 
-1. 在未安装 .NET 的 Windows x64 电脑上双击发布的 `ClickDesk.exe`，确认可以启动且无控制台窗口。
-2. 点击右侧“打开点击测试板”，确认 A / B / C、计数器和日志可见。
-3. 按 F6。确认倒计时后主窗口最小化，测试板保持可见。
-4. 用左键依次点击 A、B、C，分别间隔约 0.5 秒和 1 秒，然后按 F6。
-5. 确认主窗口显示 3 次点击，坐标正确、时间递增、按住时长非负。
-6. 设 1 轮、1.00 倍速，按 F7。确认测试板各计数加 1，顺序和间隔与录制接近。
-7. 对右键、中键、快速双击和长按分别重复此流程。
+1. On a Windows x64 computer without .NET installed, run the published ClickDesk.exe.
+2. Open the click test pad and verify its A / B / C buttons, counts, and event log.
+3. Press F6. After the countdown, the main window should minimize while the pad stays visible.
+4. Click A, B, and C with roughly 0.5 and 1 second gaps, then press F6.
+5. Confirm 3 clicks, correct coordinates, increasing timestamps, and non-negative hold times.
+6. Set one round at 1.00 speed. Press F7. Confirm the counts increase by one in the recorded order and rhythm.
+7. Repeat for right / middle clicks, double-clicks, and holds.
 
-## 停止与生命周期
+## Stop and lifecycle
 
-- 在录制倒计时和回放倒计时中分别按 F8，确认没有继续录制或发送点击。
-- 回放中按 F8，确认立即停止后续事件；长按回放中停止后鼠标没有保持按下状态。
-- 持续循环执行几轮后按 F7 / F8，确认停止；下一次仍可正常录制和回放。
-- 保持 ClickDesk 最小化，用托盘右键菜单停止，确认窗口恢复。
-- 回放中关闭主窗口，确认先停止，随后正常退出；未保存录制的保存提示正常。
-- 录制中点击主控制窗口的停止按钮，确认停止按钮的点击不进入时间线。
-- 重复启动第二个实例，确认其报告 F8 被占用且不允许开始操作。
+- Press F8 during either countdown; no recording or playback should continue.
+- Stop a replay during a hold; the simulated mouse button must not stay pressed.
+- Stop continuous playback with F7 / F8, then confirm a new session works.
+- Stop through the tray menu while minimized; the main window should return.
+- Close during playback; the app should stop before exiting, with a save prompt if needed.
+- Stop recording with the control window button; this control click must not enter the timeline.
+- Start a second instance; it should report the F8 conflict and block starting.
 
-## 计时与文件
+## Timing and files
 
-- 设置 3 轮和 1 秒额外等待，确认首尾静默时间被保留，额外等待只出现在两轮之间。
-- 分别以 0.50 / 2.00 倍速回放，确认单轮内部间隔约为原来的 2 倍 / 0.5 倍。
-- 保存录制、关闭、重新启动并打开文件，确认事件和时长一致，打开文件不会自行执行。
-- 打开损坏的 JSON、错误格式、未配对事件和大于 20 MB 的文件，确认出现中文错误且保留原记录。
-- 新建录制、打开其他文件、清空和退出时，确认保存 / 不保存 / 取消三个选项有效。
+- Run three rounds with an extra 1 second pause; only inter-round waits should gain the extra pause.
+- Try 0.50 and 2.00 speed; intervals should be roughly doubled and halved.
+- Save, close, reopen, and load a recording; contents should match and loading must not start playback.
+- Reject malformed JSON, unmatched events, invalid positions, and files over 20 MB while keeping the current recording.
+- Verify Save / Discard / Cancel behavior when clearing, replacing, or closing unsaved work.
+- Open a v1.0.0 recording in v1.1.0 and confirm it still replays in the same order.
 
-## 显示与权限
+## Display and permissions
 
-- 在 100%、150%、200% 缩放下检查按钮、设置区和时间线；设置区可滚动，不出现无法访问的控件。
-- 在副屏位于主屏左侧 / 上方的桌面中录制，确认负坐标和回放命中位置正确。
-- 移除包含点击坐标的副屏，确认超出当前屏幕范围的录制不能开始回放。
-- 更改虚拟桌面范围后，确认回放前出现布局变化提示。
-- 普通程序与管理员程序分别测试，确认同权限的目标可以接收点击，输入被系统拒绝时有错误提示。
+- Check 100%, 150%, and 200% scaling; settings remain scrollable and controls accessible.
+- Test secondary displays to the left / above the main display; negative coordinates must replay correctly.
+- Remove a display containing recorded positions; out-of-bounds playback should be blocked.
+- Change the virtual desktop bounds; the layout warning should appear before replay.
+- Test ordinary and elevated target apps with matching permissions; rejected input should show an English error.

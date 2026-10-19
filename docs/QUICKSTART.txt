@@ -1,33 +1,36 @@
-ClickDesk · Windows 鼠标录制器
-适用：Windows 10 / 11，x64 电脑
+ClickDesk · Windows Mouse Recorder
+For Windows 10 / 11 x64
 
-解压后直接双击 ClickDesk.exe，无需安装 Python 或 .NET。
+Extract the ZIP and run ClickDesk.exe. No Python or .NET installation is required.
 
-1. 打开目标程序，将窗口放好。
-2. 按 F6，默认倒计时 3 秒后开始录制。
-3. 完成一次鼠标点击操作，再按 F6 结束录制。
-4. 设置重复次数，速度保持 1.00，按 F7 开始回放。
-5. 按 F8 随时停止。最小化后快捷键仍然有效。
+1. Open the target application and position its window.
+2. Press F6. Recording starts after the countdown (3 seconds by default).
+3. Perform your sequence of clicks. Press F6 again to finish recording.
+4. Set the repeat count. Keep the speed at 1.00 for the original timing.
+5. Press F7 to replay. Press F8 anytime to stop.
 
-第一次使用建议点击右侧“打开点击测试板”，录制 A → B → C，
-然后回放，观察显示的点击次数、顺序和时间间隔。
+Global shortcuts still work while the app is minimized. You can also stop
+from the ClickDesk tray icon's right-click menu.
 
-支持左键、右键、中键和双击节奏；支持持续循环、速度调整、
-每轮额外等待、倒计时，以及保存和打开录制文件。
+For a first try, select "Open click test pad". Record clicks on A, B, and C,
+then replay to check the actual order, counts, and timing.
 
-请保持目标窗口位置、屏幕布局和缩放设置不变。
-倒计时结束后到首次点击，以及最后一次点击到停止之间的等待
-都会保留在每一轮回放中。Windows 调度可能带来少量计时偏差。
+Supports left, right, and middle clicks, double-click timing, holds,
+repeat counts, continuous loops, speed adjustment, a start countdown,
+extra pauses between rounds, and local recording files.
 
-不记录键盘、滚轮或连续移动轨迹，不用于重现拖拽路径。
-如目标程序以管理员身份运行，ClickDesk 也需要同等权限。
+Keep the target window, monitor layout, resolution, and scaling unchanged.
+The wait before the first click and after the final click is kept in each round.
+Actual timing depends on Windows scheduling and the target application.
 
-如 F8 被占用，请关闭占用快捷键的程序后重新启动 ClickDesk。
-通知区域的 ClickDesk 图标右键菜单也可以停止操作。
+Does not record keyboard input, scrolling, or continuous movement paths.
+If the target app runs as administrator, ClickDesk needs the same permissions.
+If F8 is already in use, close the other application and restart ClickDesk.
 
-程序数据保存在本地，没有网络上传功能。
-更多说明见 README.md。
+Recordings stay local. No recording upload feature or account is required.
+Compatibility with games is not verified. Games may restrict automation or
+ignore simulated input; check their rules before use.
 
-自动发布流程在 Windows 上执行核心测试和程序启动检查。
-实际鼠标操作和游戏兼容性仍需实机验证。
-《梦幻西游》尚未实测，不保证游戏接受模拟输入；请确认官方规则。
+The release workflow runs core tests and a Windows startup / shutdown check.
+Actual mouse input still needs manual verification.
+See README.en.md for the complete English guide.

@@ -105,7 +105,7 @@ internal sealed class MouseHook : IDisposable
         };
         _handle = NativeMethods.SetWindowsHookEx(14, _proc, NativeMethods.GetModuleHandle(null), 0);
         if (_handle == IntPtr.Zero)
-            throw new Win32Exception(Marshal.GetLastWin32Error(), "无法启动全局鼠标录制。");
+            throw new Win32Exception(Marshal.GetLastWin32Error(), "Could not start the global mouse recorder.");
     }
 
     public void Dispose()
@@ -164,6 +164,6 @@ internal sealed class WindowsMouseOutput(DesktopBounds desktop) : IMouseOutput
         } };
         if (NativeMethods.SendInput(1, inputs, Marshal.SizeOf<NativeMethods.Input>()) != 1)
             throw new Win32Exception(Marshal.GetLastWin32Error(),
-                "Windows 拒绝了模拟点击。如果目标程序以管理员身份运行，请以管理员身份重新启动 ClickDesk。");
+                "Windows rejected simulated input. If the target application runs as administrator, restart ClickDesk as administrator too.");
     }
 }

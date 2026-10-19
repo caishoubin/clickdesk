@@ -8,11 +8,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <AssemblyName>ClickDesk</AssemblyName>
-    <Version>1.0.0</Version>
-    <Product>ClickDesk 鼠标录制器</Product>
-    <Description>录制鼠标点击，按原有节奏重复执行。</Description>
+    <Version>1.1.0</Version>
+    <Product>ClickDesk Mouse Recorder</Product>
+    <Description>Record mouse clicks and replay them with their original timing.</Description>
     <Company>ClickDesk</Company>
-    <SatelliteResourceLanguages>zh-Hans;en</SatelliteResourceLanguages>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../ClickDesk.Core/ClickDesk.Core.csproj" />

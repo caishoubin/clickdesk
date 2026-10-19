@@ -14,25 +14,25 @@ internal sealed class MainForm : Form
     private static readonly Color Red = Color.FromArgb(193, 53, 67);
     private static readonly Color Surface = Color.FromArgb(244, 247, 250);
 
-    private readonly Button _record = ActionButton("●  开始录制   F6", Red, true);
-    private readonly Button _play = ActionButton("▶  开始回放   F7", Teal, true);
-    private readonly Button _stop = ActionButton("■  停止   F8", Ink, false);
-    private readonly Button _open = ActionButton("打开录制", Ink, false);
-    private readonly Button _save = ActionButton("保存录制", Ink, false);
-    private readonly Button _clear = ActionButton("清空", Ink, false);
+    private readonly Button _record = ActionButton("●  Record   F6", Red, true);
+    private readonly Button _play = ActionButton("▶  Replay   F7", Teal, true);
+    private readonly Button _stop = ActionButton("■  Stop   F8", Ink, false);
+    private readonly Button _open = ActionButton("Open", Ink, false);
+    private readonly Button _save = ActionButton("Save", Ink, false);
+    private readonly Button _clear = ActionButton("Clear", Ink, false);
     private readonly Label _countValue = ValueLabel("0");
     private readonly Label _durationValue = ValueLabel("00:00.0");
-    private readonly Label _stateValue = ValueLabel("准备就绪");
-    private readonly Label _details = TextLabel("录下点击，让重复的工作自动完成。", Muted);
-    private readonly Label _footer = TextLabel("F6 开始 / 结束录制    ·    F7 开始 / 停止回放    ·    F8 随时停止", Muted);
-    private readonly Label _hotkeyInfo = TextLabel("全局快捷键正在初始化…", Muted);
-    private readonly Label _empty = TextLabel("还没有点击记录\n\n点击“开始录制”或按 F6，切换到目标窗口进行操作。", Muted);
+    private readonly Label _stateValue = ValueLabel("Ready");
+    private readonly Label _details = TextLabel("Record your clicks. Replay your rhythm.", Muted);
+    private readonly Label _footer = TextLabel("F6 record / finish    ·    F7 replay / stop    ·    F8 stop anytime", Muted);
+    private readonly Label _hotkeyInfo = TextLabel("Initializing global shortcuts…", Muted);
+    private readonly Label _empty = TextLabel("No clicks recorded yet\n\nSelect Record or press F6, then switch to your target window.", Muted);
     private readonly NumericUpDown _repeat = Number(1, 999_999, 1, 0);
     private readonly NumericUpDown _speed = Number(0.1m, 10, 1, 2);
     private readonly NumericUpDown _gap = Number(0, 3600, 1, 1);
     private readonly NumericUpDown _countdown = Number(1, 10, 3, 0);
-    private readonly CheckBox _forever = new() { Text = "持续循环，直到手动停止", AutoSize = true };
-    private readonly CheckBox _minimize = new() { Text = "开始时自动最小化", Checked = true, AutoSize = true };
+    private readonly CheckBox _forever = new() { Text = "Loop until stopped", AutoSize = true };
+    private readonly CheckBox _minimize = new() { Text = "Minimize when starting", Checked = true, AutoSize = true };
     private readonly DataGridView _grid = new();
     private readonly NotifyIcon _tray = new();
     private readonly System.Windows.Forms.Timer _timer = new() { Interval = 100 };
@@ -59,8 +59,8 @@ internal sealed class MainForm : Form
     internal MainForm(string? initialPath)
     {
         _initialPath = initialPath;
-        Text = "ClickDesk · 鼠标录制器";
-        Font = new Font("Microsoft YaHei UI", 9F);
+        Text = "ClickDesk · Mouse Recorder";
+        Font = new Font("Segoe UI", 9F);
         BackColor = Surface;
         ForeColor = Ink;
         AutoScaleDimensions = new SizeF(96F, 96F);
@@ -82,7 +82,7 @@ internal sealed class MainForm : Form
             _path = null;
             _dirty = false;
             ResetRows();
-            RefreshInterface("记录已清空，可以开始新的录制。");
+            RefreshInterface("Sequence cleared. Ready for a new recording.");
         };
         _forever.CheckedChanged += (_, _) => _repeat.Enabled = _mode == Mode.Idle && !_forever.Checked;
         _timer.Tick += (_, _) => OnTimer();
@@ -108,8 +108,8 @@ internal sealed class MainForm : Form
         var title = new Label { Text = "ClickDesk", Font = new Font("Segoe UI", 28F, FontStyle.Bold),
             ForeColor = Ink, AutoSize = true, Dock = DockStyle.Top, Margin = Padding.Empty };
         heading.Controls.Add(title, 0, 0);
-        heading.Controls.Add(new Label { Text = "鼠标录制器  /  WINDOWS", ForeColor = Teal,
-            Font = new Font("Microsoft YaHei UI", 11F, FontStyle.Bold), Dock = DockStyle.Fill,
+        heading.Controls.Add(new Label { Text = "MOUSE RECORDER  /  WINDOWS", ForeColor = Teal,
+            Font = new Font("Segoe UI", 11F, FontStyle.Bold), Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleRight }, 1, 0);
         root.Controls.Add(heading, 0, 0);
 
@@ -117,9 +117,9 @@ internal sealed class MainForm : Form
         stats.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
         stats.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30));
         stats.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45));
-        stats.Controls.Add(StatCard("点击次数", _countValue), 0, 0);
-        stats.Controls.Add(StatCard("录制时长", _durationValue), 1, 0);
-        stats.Controls.Add(StatCard("当前状态", _stateValue), 2, 0);
+        stats.Controls.Add(StatCard("Clicks", _countValue), 0, 0);
+        stats.Controls.Add(StatCard("Duration", _durationValue), 1, 0);
+        stats.Controls.Add(StatCard("Status", _stateValue), 2, 0);
         root.Controls.Add(stats, 0, 1);
 
         var actions = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false, AutoScroll = true, Margin = Padding.Empty };
@@ -134,7 +134,7 @@ internal sealed class MainForm : Form
         timeline.RowStyles.Add(new RowStyle(SizeType.Absolute, 34));
         timeline.RowStyles.Add(new RowStyle(SizeType.Absolute, 28));
         timeline.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        timeline.Controls.Add(new Label { Text = "点击时间线", AutoSize = true,
+        timeline.Controls.Add(new Label { Text = "Click timeline", AutoSize = true,
             Font = new Font(Font, FontStyle.Bold), ForeColor = Ink }, 0, 0);
         _details.Dock = DockStyle.Fill;
         timeline.Controls.Add(_details, 0, 1);
@@ -150,7 +150,7 @@ internal sealed class MainForm : Form
         root.Controls.Add(content, 0, 3);
         _footer.Dock = DockStyle.Fill;
         root.Controls.Add(_footer, 0, 4);
-        var note = TextLabel("按屏幕绝对坐标回放。请保持目标窗口位置、屏幕布局和缩放设置一致。", Muted);
+        var note = TextLabel("Playback uses absolute coordinates. Keep the target window, monitor layout, and scaling unchanged.", Muted);
         note.Dock = DockStyle.Fill;
         root.Controls.Add(note, 0, 5);
     }
@@ -160,26 +160,26 @@ internal sealed class MainForm : Form
         var scroll = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, AutoScroll = true, Margin = Padding.Empty };
         var flow = new FlowLayoutPanel { Dock = DockStyle.Top, FlowDirection = FlowDirection.TopDown,
             WrapContents = false, AutoSize = true, Padding = new Padding(18), Width = 260 };
-        flow.Controls.Add(new Label { Text = "回放设置", Font = new Font(Font, FontStyle.Bold), AutoSize = true,
+        flow.Controls.Add(new Label { Text = "Playback settings", Font = new Font(Font, FontStyle.Bold), AutoSize = true,
             Margin = new Padding(0, 0, 0, 16) });
-        AddSetting(flow, "重复次数", _repeat);
+        AddSetting(flow, "Repeat count", _repeat);
         _forever.Margin = new Padding(0, 2, 0, 12);
         flow.Controls.Add(_forever);
-        AddSetting(flow, "回放速度（倍，1 = 原速）", _speed);
-        AddSetting(flow, "每轮额外等待（秒）", _gap);
-        AddSetting(flow, "开始前倒计时（秒）", _countdown);
+        AddSetting(flow, "Playback speed (1 = original)", _speed);
+        AddSetting(flow, "Extra pause between rounds (s)", _gap);
+        AddSetting(flow, "Start countdown (seconds)", _countdown);
         _minimize.Margin = new Padding(0, 12, 0, 10);
         flow.Controls.Add(_minimize);
         _hotkeyInfo.MaximumSize = new Size(220, 0);
         _hotkeyInfo.AutoSize = true;
         _hotkeyInfo.Margin = new Padding(0, 6, 0, 10);
         flow.Controls.Add(_hotkeyInfo);
-        var help = TextLabel("快速开始\n\n1. 按 F6，倒计时后进行点击\n2. 再按 F6 结束录制\n3. 按 F7，开始重复操作\n\n按 F8 可停止录制、倒计时或回放。\n\n记录左 / 右 / 中键及双击节奏。\n不记录键盘、滚轮和连续移动轨迹。", Muted);
+        var help = TextLabel("Quick start\n\n1. Press F6, then click after the countdown\n2. Press F6 again to finish\n3. Press F7 to replay\n\nF8 stops recording, countdowns, or playback.\n\nCaptures left / right / middle clicks and double-click timing.\nNo keyboard, scrolling, or movement paths.", Muted);
         help.AutoSize = true;
         help.MaximumSize = new Size(224, 0);
         help.Margin = new Padding(0, 8, 0, 0);
         flow.Controls.Add(help);
-        var test = ActionButton("打开点击测试板", Teal, false);
+        var test = ActionButton("Open click test pad", Teal, false);
         test.Margin = new Padding(0, 16, 0, 0);
         test.Click += (_, _) =>
         {
@@ -217,8 +217,8 @@ internal sealed class MainForm : Form
         _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
         _grid.RowTemplate.Height = 34;
         _grid.VirtualMode = true;
-        foreach (var (name, title, weight) in new[] { ("index", "序号", 45), ("button", "按键", 55),
-            ("point", "坐标 (X, Y)", 115), ("gap", "间隔 / 秒", 85), ("hold", "按住 / 秒", 85), ("time", "时间 / 秒", 85) })
+        foreach (var (name, title, weight) in new[] { ("index", "#", 45), ("button", "Button", 55),
+            ("point", "Position (X, Y)", 115), ("gap", "Interval (s)", 85), ("hold", "Hold (s)", 85), ("time", "Time (s)", 85) })
             _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = name, HeaderText = title,
                 FillWeight = weight, SortMode = DataGridViewColumnSortMode.NotSortable });
         _grid.CellValueNeeded += (_, e) =>
@@ -228,10 +228,10 @@ internal sealed class MainForm : Form
             e.Value = e.ColumnIndex switch
             {
                 0 => (e.RowIndex + 1).ToString(),
-                1 => row.Button switch { ClickButton.Left => "左键", ClickButton.Right => "右键", _ => "中键" },
+                1 => row.Button switch { ClickButton.Left => "Left", ClickButton.Right => "Right", _ => "Middle" },
                 2 => $"{row.X}, {row.Y}",
                 3 => (row.Gap / 1000).ToString("0.000"),
-                4 => row.Hold is { } hold ? (hold / 1000).ToString("0.000") : "按住中…",
+                4 => row.Hold is { } hold ? (hold / 1000).ToString("0.000") : "Held…",
                 5 => (row.Offset / 1000).ToString("0.000"),
                 _ => ""
             };
@@ -242,7 +242,7 @@ internal sealed class MainForm : Form
     { Text = text, ForeColor = color, AutoSize = true, Margin = Padding.Empty };
 
     private static Label ValueLabel(string text) => new()
-    { Text = text, AutoSize = true, Font = new Font("Microsoft YaHei UI", 18F, FontStyle.Bold),
+    { Text = text, AutoSize = true, Font = new Font("Segoe UI", 18F, FontStyle.Bold),
         ForeColor = Ink, Margin = Padding.Empty, Dock = DockStyle.Fill };
 
     private static Button ActionButton(string text, Color color, bool primary) => new()
@@ -299,7 +299,7 @@ internal sealed class MainForm : Form
             { _registeredHotkeys.Add(id); if (id == 3) _stopHotkeyReady = true; }
             else missing.Add(key.ToString());
         }
-        _hotkeyInfo.Text = missing.Count == 0 ? "●  全局快捷键已就绪" : $"快捷键被占用：{string.Join("、", missing)}。\n请关闭占用程序后重新启动。";
+        _hotkeyInfo.Text = missing.Count == 0 ? "●  Global shortcuts ready" : $"Shortcuts in use: {string.Join(", ", missing)}.\nClose the other application and restart ClickDesk.";
         _hotkeyInfo.ForeColor = missing.Count == 0 ? Teal : Red;
         _tray.Visible = true;
         _timer.Start();
@@ -334,12 +334,12 @@ internal sealed class MainForm : Form
     private void ConfigureTray()
     {
         _tray.Icon = Icon;
-        _tray.Text = "ClickDesk · F8 随时停止";
+        _tray.Text = "ClickDesk · F8 to stop anytime";
         var menu = new ContextMenuStrip();
-        menu.Items.Add("显示主窗口", null, (_, _) => RestoreWindow());
-        menu.Items.Add("停止操作 (F8)", null, (_, _) => StopCurrent());
+        menu.Items.Add("Show window", null, (_, _) => RestoreWindow());
+        menu.Items.Add("Stop (F8)", null, (_, _) => StopCurrent());
         menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("退出", null, (_, _) => Close());
+        menu.Items.Add("Exit", null, (_, _) => Close());
         _tray.ContextMenuStrip = menu;
         _tray.DoubleClick += (_, _) => RestoreWindow();
     }
@@ -356,7 +356,7 @@ internal sealed class MainForm : Form
         RefreshInterface();
         try
         {
-            await CountdownAsync("录制", token);
+            await CountdownAsync("Record", token);
             token.ThrowIfCancellationRequested();
             // Ignore buttons already held at recording start until they are released.
             _ignoredButtons.Clear();
@@ -371,10 +371,10 @@ internal sealed class MainForm : Form
             ResetRows();
             _recordWatch.Restart();
             _mode = Mode.Recording;
-            RefreshInterface("正在录制。按 F6 或 F8 结束；对本工具窗口的点击会自动忽略。");
+            RefreshInterface("Recording. F6 or F8 to finish. Clicks on the control window are ignored.");
         }
-        catch (OperationCanceledException) { FinishOperation("已取消录制倒计时。"); }
-        catch (Exception ex) { FinishOperation("无法开始录制。"); ShowError(ex); }
+        catch (OperationCanceledException) { FinishOperation("Recording countdown cancelled."); }
+        catch (Exception ex) { FinishOperation("Could not start recording."); ShowError(ex); }
     }
 
     private void OnMouseEvent(int x, int y, ClickButton button, ClickAction action)
@@ -397,8 +397,8 @@ internal sealed class MainForm : Form
         if (_mode != Mode.Idle || _recording.Events.Count == 0 || !CheckStopHotkey()) return;
         var desktop = NativeMethods.Desktop();
         if (_recording.Events.Any(item => !desktop.Contains(item.X, item.Y)))
-        { ShowError(new InvalidOperationException("部分录制坐标超出了当前屏幕，请恢复原来的显示器布局后再回放。")); return; }
-        if (desktop != _recording.Screen && Ask("当前屏幕布局与录制时不同，点击位置可能发生变化。\n\n是否仍按原坐标回放？",
+        { ShowError(new InvalidOperationException("Some click positions are outside the current desktop. Restore the original monitor layout before replaying.")); return; }
+        if (desktop != _recording.Screen && Ask("The monitor layout has changed since this recording. Click positions may no longer match.\n\nReplay at the original coordinates anyway?",
             MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
         var options = new PlaybackOptions(_forever.Checked ? 0 : (int)_repeat.Value, (double)_speed.Value, (double)_gap.Value * 1000);
         _operation = new CancellationTokenSource();
@@ -410,16 +410,16 @@ internal sealed class MainForm : Form
         RefreshInterface();
         try
         {
-            await CountdownAsync("回放", token);
+            await CountdownAsync("Replay", token);
             token.ThrowIfCancellationRequested();
             _mode = Mode.Playing;
-            RefreshInterface("正在按录制节奏回放。按 F7 或 F8 停止。");
+            RefreshInterface("Replaying with the recorded timing. Press F7 or F8 to stop.");
             await Task.Run(() => Playback.RunAsync(recording, options, new WindowsMouseOutput(desktop), new PlaybackClock(),
                 p => Volatile.Write(ref _progress, p), token), token);
-            FinishOperation("回放已完成。");
+            FinishOperation("Playback complete.");
         }
-        catch (OperationCanceledException) { FinishOperation("已停止，模拟按住的鼠标按键已松开。"); }
-        catch (Exception ex) { FinishOperation("回放已停止。"); ShowError(ex); }
+        catch (OperationCanceledException) { FinishOperation("Stopped. Any simulated button holds have been released."); }
+        catch (Exception ex) { FinishOperation("Playback stopped."); ShowError(ex); }
     }
 
     private async Task CountdownAsync(string action, CancellationToken token)
@@ -427,9 +427,9 @@ internal sealed class MainForm : Form
         for (var seconds = (int)_countdown.Value; seconds > 0; seconds--)
         {
             token.ThrowIfCancellationRequested();
-            _stateValue.Text = $"{seconds} 秒后{action}";
-            _details.Text = $"请切换到目标窗口，按 F8 可取消。";
-            _tray.Text = $"ClickDesk · {seconds} 秒后{action} · F8 取消";
+            _stateValue.Text = $"{action} in {seconds}s";
+            _details.Text = $"Switch to the target window. Press F8 to cancel.";
+            _tray.Text = $"ClickDesk · {action} in {seconds}s · F8 to cancel";
             await Task.Delay(1000, token);
         }
     }
@@ -437,7 +437,7 @@ internal sealed class MainForm : Form
     private bool CheckStopHotkey()
     {
         if (_stopHotkeyReady) return true;
-        ShowError(new InvalidOperationException("F8 紧急停止快捷键不可用。请关闭占用 F8 的程序，然后重新启动 ClickDesk。"));
+        ShowError(new InvalidOperationException("The F8 stop shortcut is unavailable. Close the application using F8, then restart ClickDesk."));
         return false;
     }
 
@@ -467,12 +467,12 @@ internal sealed class MainForm : Form
             _dirty = _recording.Events.Count > 0;
             ResetRows();
             AppendRows(_recording.Events);
-            FinishOperation($"录制完成：{_recording.ClickCount} 次点击。可以保存，或按 F7 回放。");
+            FinishOperation($"Captured {_recording.ClickCount} clicks. Save the recording or press F7 to replay.");
             return;
         }
         _mode = Mode.Stopping;
         _operation?.Cancel();
-        RefreshInterface("正在停止…");
+        RefreshInterface("Stopping…");
     }
 
     private void FinishOperation(string message)
@@ -482,7 +482,7 @@ internal sealed class MainForm : Form
         _operation?.Dispose();
         _operation = null;
         _mode = Mode.Idle;
-        _tray.Text = "ClickDesk · F8 随时停止";
+        _tray.Text = "ClickDesk · F8 to stop anytime";
         RefreshInterface(message);
         if (_restoreAfterRun) RestoreWindow();
         _restoreAfterRun = false;
@@ -502,12 +502,12 @@ internal sealed class MainForm : Form
             _durationValue.Text = Duration(_recordWatch.Elapsed.TotalMilliseconds);
             if (_hook?.CallbackError is { } error) { StopCurrent(); ShowError(error); }
             else if (buffer.IsFull || _recordWatch.Elapsed.TotalMilliseconds >= RecordingFile.MaxDurationMs)
-            { StopCurrent(); _details.Text = "已达到单次录制上限，录制已自动停止并保留。"; }
+            { StopCurrent(); _details.Text = "The recording limit was reached. Recording stopped and the sequence was kept."; }
         }
         if (_mode == Mode.Playing && Volatile.Read(ref _progress) is { } progress)
         {
-            _stateValue.Text = $"回放 · 第 {progress.Round:N0} 轮";
-            _details.Text = $"事件 {progress.EventIndex:N0} / {progress.EventCount:N0}  ·  F8 随时停止";
+            _stateValue.Text = $"Replay · round {progress.Round:N0}";
+            _details.Text = $"Event {progress.EventIndex:N0} / {progress.EventCount:N0}  ·  F8 to stop anytime";
         }
     }
 
@@ -550,9 +550,9 @@ internal sealed class MainForm : Form
     {
         var idle = _mode == Mode.Idle;
         _record.Enabled = idle || _mode is Mode.PreparingRecord or Mode.Recording;
-        _record.Text = _mode is Mode.PreparingRecord or Mode.Recording ? "■  结束录制   F6" : "●  开始录制   F6";
+        _record.Text = _mode is Mode.PreparingRecord or Mode.Recording ? "■  Finish   F6" : "●  Record   F6";
         _play.Enabled = (idle && _recording.Events.Count > 0) || _mode is Mode.PreparingPlayback or Mode.Playing;
-        _play.Text = _mode is Mode.PreparingPlayback or Mode.Playing ? "■  停止回放   F7" : "▶  开始回放   F7";
+        _play.Text = _mode is Mode.PreparingPlayback or Mode.Playing ? "■  Stop replay   F7" : "▶  Replay   F7";
         _stop.Enabled = !idle && _mode != Mode.Stopping;
         _open.Enabled = idle;
         _save.Enabled = idle && _recording.Events.Count > 0;
@@ -560,16 +560,16 @@ internal sealed class MainForm : Form
         foreach (var control in new Control[] { _speed, _gap, _countdown, _forever, _minimize }) control.Enabled = idle;
         _repeat.Enabled = idle && !_forever.Checked;
         _stateValue.ForeColor = _mode == Mode.Recording ? Red : _mode == Mode.Playing ? Teal : Ink;
-        _stateValue.Text = _mode switch { Mode.Recording => "正在录制", Mode.Playing => "正在回放",
-            Mode.PreparingRecord or Mode.PreparingPlayback => "准备中…", Mode.Stopping => "正在停止…", _ => "准备就绪" };
-        _tray.Text = $"ClickDesk · {_stateValue.Text} · F8 随时停止";
+        _stateValue.Text = _mode switch { Mode.Recording => "Recording", Mode.Playing => "Replaying",
+            Mode.PreparingRecord or Mode.PreparingPlayback => "Getting ready…", Mode.Stopping => "Stopping…", _ => "Ready" };
+        _tray.Text = $"ClickDesk · {_stateValue.Text} · F8 to stop anytime";
         if (_mode != Mode.Recording)
         {
             _countValue.Text = _recording.ClickCount.ToString("N0");
             _durationValue.Text = Duration(_recording.DurationMs);
         }
         if (message is not null) _details.Text = message;
-        Text = $"{(_dirty ? "* " : "")}{(_path is null ? "ClickDesk · 鼠标录制器" : Path.GetFileName(_path) + " · ClickDesk")}";
+        Text = $"{(_dirty ? "* " : "")}{(_path is null ? "ClickDesk · Mouse Recorder" : Path.GetFileName(_path) + " · ClickDesk")}";
     }
 
     private DialogResult Ask(string text, MessageBoxButtons buttons, MessageBoxIcon icon)
@@ -583,16 +583,17 @@ internal sealed class MainForm : Form
     {
         if (!_dirty) return true;
         RestoreWindow();
-        var answer = Ask("当前录制尚未保存，是否先保存？", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+        var answer = Ask("This recording has unsaved changes. Save it first?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
         return answer == DialogResult.No || (answer == DialogResult.Yes && SaveRecording());
     }
 
     private bool SaveRecording()
     {
         if (_mode != Mode.Idle || _recording.Events.Count == 0) return false;
-        using var dialog = new SaveFileDialog { Filter = "ClickDesk 录制 (*.clickdesk.json)|*.clickdesk.json|JSON 文件 (*.json)|*.json",
+        using var dialog = new SaveFileDialog { Filter = "ClickDesk recording (*.clickdesk.json)|*.clickdesk.json|JSON files (*.json)|*.json",
+            Title = "Save recording",
             DefaultExt = "clickdesk.json", AddExtension = true, FileName = _path is null ?
-                $"鼠标录制-{DateTime.Now:yyyyMMdd-HHmmss}.clickdesk.json" : Path.GetFileName(_path) };
+                $"Recording-{DateTime.Now:yyyyMMdd-HHmmss}.clickdesk.json" : Path.GetFileName(_path) };
         _promptOpen = true;
         try
         {
@@ -600,7 +601,7 @@ internal sealed class MainForm : Form
             RecordingFile.Save(dialog.FileName, _recording);
             _path = dialog.FileName;
             _dirty = false;
-            RefreshInterface("录制已保存。下次打开文件即可再次回放。");
+            RefreshInterface("Recording saved. Open this file later to replay the sequence.");
             return true;
         }
         catch (Exception ex) { ShowError(ex); return false; }
@@ -610,7 +611,7 @@ internal sealed class MainForm : Form
     private void OpenRecording()
     {
         if (_mode != Mode.Idle || !MaybeSave()) return;
-        using var dialog = new OpenFileDialog { Filter = "ClickDesk 录制 (*.clickdesk.json;*.json)|*.clickdesk.json;*.json", CheckFileExists = true };
+        using var dialog = new OpenFileDialog { Title = "Open recording", Filter = "ClickDesk recording (*.clickdesk.json;*.json)|*.clickdesk.json;*.json", CheckFileExists = true };
         _promptOpen = true;
         try { if (dialog.ShowDialog(this) == DialogResult.OK) LoadRecording(dialog.FileName); }
         finally { _promptOpen = false; }
@@ -626,7 +627,7 @@ internal sealed class MainForm : Form
             _dirty = false;
             ResetRows();
             AppendRows(loaded.Events);
-            RefreshInterface($"已打开：{Path.GetFileName(path)}");
+            RefreshInterface($"Opened: {Path.GetFileName(path)}");
         }
         catch (Exception ex) { ShowError(ex); }
     }

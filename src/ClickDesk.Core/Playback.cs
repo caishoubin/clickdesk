@@ -8,7 +8,7 @@ public sealed record PlaybackOptions(int RepeatCount, double Speed, double LoopG
     {
         if (RepeatCount < 0 || RepeatCount > 999_999 || !double.IsFinite(Speed) || Speed < 0.1 ||
             Speed > 10 || !double.IsFinite(LoopGapMs) || LoopGapMs < 0 || LoopGapMs > 3_600_000)
-            throw new ArgumentOutOfRangeException(nameof(PlaybackOptions), "回放设置超出允许范围。");
+            throw new ArgumentOutOfRangeException(nameof(PlaybackOptions), "Playback settings are outside the allowed range.");
     }
 }
 
@@ -52,7 +52,7 @@ public static class Playback
     {
         RecordingFile.Validate(recording);
         options.Validate();
-        if (recording.Events.Count == 0) throw new InvalidOperationException("请先录制至少一次点击。");
+        if (recording.Events.Count == 0) throw new InvalidOperationException("Record at least one click before replaying.");
         var roundStart = clock.ElapsedMs;
         try
         {

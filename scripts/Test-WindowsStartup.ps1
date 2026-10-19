@@ -17,7 +17,33 @@ try {
         Start-Sleep -Milliseconds 250
     } while ([DateTime]::UtcNow -lt $deadline)
     if ($appProcess.MainWindowHandle -eq [IntPtr]::Zero) { throw 'Main window was not created.' }
-    if ($appProcess.MainWindowTitle -notlike '*ClickDesk*') { throw 'Unexpected main window title.' }
+    if ($appProcess.MainWindowTitle -notlike '*ClickDesk*Mouse Recorder*') { throw 'Unexpected main window title.' }
+    Add-Type -TypeDefinition @'
+using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+public static class ClickDeskWindowCaptions {
+    private delegate bool Visitor(IntPtr window, IntPtr parameter);
+    [DllImport("user32.dll")] private static extern bool EnumChildWindows(IntPtr parent, Visitor visitor, IntPtr parameter);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] private static extern int GetWindowText(IntPtr window, StringBuilder text, int length);
+    public static string Read(IntPtr parent) {
+        var captions = new List<string>();
+        EnumChildWindows(parent, (window, unused) => {
+            var text = new StringBuilder(4096);
+            if (GetWindowText(window, text, text.Capacity) > 0) captions.Add(text.ToString());
+            return true;
+        }, IntPtr.Zero);
+        return string.Join("\n", captions);
+    }
+}
+'@
+    $captionText = [ClickDeskWindowCaptions]::Read($appProcess.MainWindowHandle)
+    foreach ($expected in @('Record', 'Replay', 'Playback settings', 'Click timeline')) {
+        if ($captionText -notmatch [regex]::Escape($expected)) { throw "Missing English caption: $expected" }
+    }
+    if ($captionText -match '[\u3400-\u9fff]') { throw 'Non-English interface text was found.' }
+    Write-Host 'PASS: Main window and controls use English captions.'
     if (-not $appProcess.CloseMainWindow()) { throw 'Main window did not accept close request.' }
     if (-not $appProcess.WaitForExit(10000)) { throw 'Application did not shut down cleanly.' }
     if ($appProcess.ExitCode -ne 0) { throw "Application exit code: $($appProcess.ExitCode)." }

@@ -1,23 +1,26 @@
-ClickDesk 首个公开版本：录制鼠标点击的位置、顺序和时间间隔，再按原来的节奏重复执行。
+ClickDesk records mouse click positions, order, and timing, then replays the sequence at your chosen pace.
 
-## 下载与运行
+New in v1.1.0: an English desktop interface, English messages and quick-start guide, and an English product website with an interactive demo.
 
-下载 **ClickDesk-Windows-x64.zip**，解压后双击 **ClickDesk.exe**。适用于 Windows 10 / 11 x64，自带 .NET 运行时，无需另行安装。
+## Download and run
 
-## 功能
+Download **ClickDesk-Windows-x64.zip**, extract it, and run **ClickDesk.exe**. Supports Windows 10 / 11 x64. The .NET runtime is included, so no separate installation is needed.
 
-- 左键、右键、中键录制，保留双击节奏和按住时长。
-- F6 开始 / 结束录制，F7 开始 / 停止回放，F8 随时停止。
-- 重复次数、持续循环、回放速度、每轮额外等待和开始前倒计时。
-- 保存 / 打开本地录制文件，时间线显示点击顺序、坐标和间隔。
-- 托盘菜单和内置点击测试板。
+The product website, desktop interface, settings, messages, test pad, and bundled quick-start guide are in English.
 
-## 验证与适用范围
+## Features
 
-发布流程在 Windows 上执行 12 项核心回归测试，并验证免安装程序启动、主窗口创建和正常退出。全局鼠标操作、多显示器和不同缩放设置仍需按仓库中的实机检查步骤验证。
+- Left, right, and middle clicks, preserving double-click timing and button hold duration.
+- **F6** to start / finish recording, **F7** to start / stop playback, and **F8** to stop anytime.
+- Repeat counts, continuous loops, playback speed, an extra pause between rounds, and a start countdown.
+- Local recording files, a click timeline, a tray menu, and a built-in click test pad.
 
-请保持目标窗口位置、屏幕布局和缩放设置一致。本版按固定坐标执行，不识别画面、战斗状态或路径，也不记录键盘、滚轮和连续移动轨迹。
+## Verification and compatibility
 
-《梦幻西游》尚未实测，不保证游戏接受模拟输入；使用前请确认游戏官方规则。
+The release workflow runs 12 core regression tests on Windows and verifies that the portable app starts, creates its main window, and exits cleanly. Actual global input, monitor layouts, and different scaling settings still need manual verification.
 
-附件同时提供完整源码 ZIP 与 SHA-256 校验文件。
+Playback uses absolute screen coordinates. Keep the target window position, monitor arrangement, resolution, and scaling unchanged. This version does not recognize screen content or game states, navigate, record keyboard input or scrolling, or reproduce continuous movement paths.
+
+Compatibility with games is not verified. Games may restrict automation or ignore simulated mouse input; check their rules before use.
+
+The release includes the source ZIP and SHA-256 checksums.

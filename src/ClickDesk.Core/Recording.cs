@@ -42,15 +42,15 @@ public static class RecordingFile
     public static void Validate(Recording recording)
     {
         if (recording.FormatVersion != 1)
-            throw new InvalidDataException("不支持这个录制文件版本。");
+            throw new InvalidDataException("This recording format version is not supported.");
         if (!double.IsFinite(recording.DurationMs) || recording.DurationMs < 0 ||
             recording.DurationMs > MaxDurationMs)
-            throw new InvalidDataException("录制时长必须在 0 到 24 小时之间。");
+            throw new InvalidDataException("Recording duration must be between 0 and 24 hours.");
         if (recording.Screen is null || recording.Screen.Width <= 0 || recording.Screen.Height <= 0 ||
             recording.Screen.Width > 100_000 || recording.Screen.Height > 100_000)
-            throw new InvalidDataException("录制文件的屏幕信息无效。");
+            throw new InvalidDataException("The recording contains invalid desktop information.");
         if (recording.Events is null || recording.Events.Count > MaxEvents)
-            throw new InvalidDataException("录制事件数量无效，最多支持 100,000 个事件。");
+            throw new InvalidDataException("Invalid event count. A recording supports up to 100,000 events.");
 
         var held = new HashSet<ClickButton>();
         double previous = 0;
@@ -59,22 +59,22 @@ public static class RecordingFile
             if (item is null || !double.IsFinite(item.OffsetMs) || item.OffsetMs < previous ||
                 item.OffsetMs > recording.DurationMs || !Enum.IsDefined(item.Button) ||
                 !Enum.IsDefined(item.Action) || !recording.Screen.Contains(item.X, item.Y))
-                throw new InvalidDataException("录制事件的时间、坐标或鼠标按键无效。");
+                throw new InvalidDataException("A recorded event has an invalid time, position, or mouse button.");
             if (item.Action == ClickAction.Down ? !held.Add(item.Button) : !held.Remove(item.Button))
-                throw new InvalidDataException("录制文件包含未配对的鼠标按下 / 松开事件。");
+                throw new InvalidDataException("The recording contains unmatched mouse down / up events.");
             previous = item.OffsetMs;
         }
         if (held.Count != 0)
-            throw new InvalidDataException("录制文件包含未松开的鼠标按键。");
+            throw new InvalidDataException("The recording contains a mouse button that was never released.");
     }
 
     public static Recording Load(string path)
     {
         using var stream = File.OpenRead(path);
         if (stream.Length > MaxFileBytes)
-            throw new InvalidDataException("文件过大，请选择小于 20 MB 的 ClickDesk 录制文件。");
+            throw new InvalidDataException("The file is too large. Choose a ClickDesk recording smaller than 20 MB.");
         var recording = JsonSerializer.Deserialize<Recording>(stream, Options)
-            ?? throw new InvalidDataException("录制文件内容为空。");
+            ?? throw new InvalidDataException("The recording file is empty.");
         Validate(recording);
         return recording;
     }

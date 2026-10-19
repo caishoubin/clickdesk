@@ -18,7 +18,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Windows publish failed.' }
 
     Copy-Item README.md (Join-Path $outputPath 'README.md') -Force
-    Copy-Item docs/QUICKSTART.txt (Join-Path $outputPath '使用说明.txt') -Force
+    Copy-Item README.en.md (Join-Path $outputPath 'README.en.md') -Force
+    Copy-Item docs/QUICKSTART.txt (Join-Path $outputPath 'QUICKSTART.txt') -Force
     Copy-Item docs/WINDOWS-TESTING.md (Join-Path $outputPath 'WINDOWS-TESTING.md') -Force
     $archive = Join-Path $PSScriptRoot "dist/$packageName.zip"
     Compress-Archive -Path $outputPath -DestinationPath $archive -Force

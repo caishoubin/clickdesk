@@ -79,3 +79,13 @@ jobs:
           gh release edit $env:RELEASE_TAG --draft=false --latest
           if ($LASTEXITCODE -ne 0) { throw 'Could not publish release.' }
           "Published: https://github.com/$env:GITHUB_REPOSITORY/releases/tag/$env:RELEASE_TAG" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Update initial release description
+        if: github.ref == 'refs/tags/v1.1.0'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release edit v1.0.0 --notes-file docs/RELEASE-NOTES-v1.0.0.md
+          if ($LASTEXITCODE -ne 0) { throw 'Could not update the initial release description.' }

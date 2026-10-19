@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://clickdesk.still-moose-7651.chatgpt.site/sitemap.xml

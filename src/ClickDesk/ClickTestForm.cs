@@ -7,8 +7,8 @@ internal sealed class ClickTestForm : Form
 {
     internal ClickTestForm()
     {
-        Text = "ClickDesk · 点击测试板";
-        Font = new Font("Microsoft YaHei UI", 10F);
+        Text = "ClickDesk · Click Test Pad";
+        Font = new Font("Segoe UI", 10F);
         AutoScaleDimensions = new SizeF(96, 96);
         AutoScaleMode = AutoScaleMode.Dpi;
         ClientSize = new Size(560, 480);
@@ -20,11 +20,11 @@ internal sealed class ClickTestForm : Form
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 100));
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 36));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        root.Controls.Add(new Label { Text = "在这里试一试\n按 F6 录制 A → B → C，再按 F6 结束，按 F7 回放。\n保持本窗口的位置不变，观察顺序和间隔是否相同。",
+        root.Controls.Add(new Label { Text = "Try it here\nF6 to record A → B → C; F6 to finish; F7 to replay.\nKeep this window in place. Compare the order and intervals.",
             Dock = DockStyle.Fill, AutoSize = false }, 0, 0);
         var buttons = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 3, Margin = Padding.Empty };
         for (var i = 0; i < 3; i++) buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / 3));
-        var summary = new Label { Text = "等待点击…", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft };
+        var summary = new Label { Text = "Waiting for clicks…", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft };
         var log = new ListBox { Dock = DockStyle.Fill, BorderStyle = BorderStyle.None, HorizontalScrollbar = true };
         var watch = Stopwatch.StartNew();
         double? last = null;
@@ -39,7 +39,7 @@ internal sealed class ClickTestForm : Form
             button.MouseDown += (_, e) =>
             {
                 var now = watch.Elapsed.TotalMilliseconds;
-                var gap = last is null ? "首次点击" : $"间隔 {(now - last.Value) / 1000:0.000} 秒";
+                var gap = last is null ? "First click" : $"Interval {(now - last.Value) / 1000:0.000} s";
                 last = now;
                 counts[index]++;
                 summary.Text = $"A: {counts[0]}    B: {counts[1]}    C: {counts[2]}";
