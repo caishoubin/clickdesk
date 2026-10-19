@@ -1,6 +1,6 @@
 # ClickDesk free promotion kit
 
-Prepared October 19, 2026. All public post text below is a draft for the owner to review and adapt. No community post, social post, or product-directory submission has been made.
+Prepared October 19, 2026. All public post text below is a draft for the owner to review and adapt. The owner subsequently submitted the r/SideProject introduction; its public page was marked removed by Reddit's filters. Additional tailored community drafts and the publishing handoff are in [COMMUNITY-POSTS.md](COMMUNITY-POSTS.md). No additional submission by the assistant has been confirmed.
 
 ## Positioning and links
 
