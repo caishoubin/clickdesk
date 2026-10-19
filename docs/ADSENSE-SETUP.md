@@ -13,7 +13,7 @@ The original ChatGPT Sites website remains available at <https://clickdesk.still
 - Privacy and contact pages are linked from the ClickDesk homepage. The mirror's privacy notice describes GitHub Pages hosting.
 - The existing blog and its articles remain in the Pages repository; its homepage includes a ClickDesk project link.
 
-This configuration prepares ownership verification. It does not request or display advertisements, and it does not confirm that Google has accepted or reviewed the site.
+The owner's AdSense dashboard screenshot on October 19, 2026 confirms that ownership verification passed and a review was requested. The displayed status is Getting ready. Approval is pending. The website configuration does not request or display advertisements.
 
 ## Account steps
 
@@ -22,7 +22,7 @@ This configuration prepares ownership verification. It does not request or displ
 3. Select **Verify**, then **Request review** when available. Google may use different wording in its localized interface.
 4. Keep using the existing publisher account. Do not create a second AdSense account for the new address.
 
-Google allows sites under domains on the Public Suffix List; `github.io` appears in that list. Actual domain acceptance, ownership verification, and policy approval still depend on the account dashboard and Google's review. Review may include the existing blog under the same domain. This deployment has not submitted the AdSense dashboard for review.
+Google allows sites under domains on the Public Suffix List; `github.io` appears in that list. The owner has added this domain and submitted it for review. Policy approval remains Google's decision. Review may include the existing blog under the same domain. The dashboard steps above document the completed setup; they do not need to be repeated while review is pending.
 
 ## Maintain the free mirror
 

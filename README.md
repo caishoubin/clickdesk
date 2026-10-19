@@ -2,7 +2,7 @@
 
 Record click positions, order, and timing, then replay the same sequence. A portable desktop tool for Windows 10 / 11 x64.
 
-[Product website](https://clickdesk.still-moose-7651.chatgpt.site/) · [Download the latest release](https://github.com/caishoubin/clickdesk/releases/latest) · [中文说明](README.zh-CN.md)
+[Product website](https://caishoubin.github.io/clickdesk/) · [Download the latest release](https://github.com/caishoubin/clickdesk/releases/latest) · [中文说明](README.zh-CN.md)
 
 The website, desktop interface, and bundled quick-start guide are in English.
 

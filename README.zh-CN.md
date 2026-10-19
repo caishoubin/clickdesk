@@ -2,7 +2,7 @@
 
 录制鼠标点击的坐标、顺序和时间间隔，录制完成后按同样的节奏重复执行。v1.1.0 起采用英文界面，支持 Windows 10 / 11 的 x64 电脑。
 
-[产品网站](https://clickdesk.still-moose-7651.chatgpt.site/) · [English documentation](README.md) · [下载最新版本](https://github.com/caishoubin/clickdesk/releases/latest) · [查看构建状态](https://github.com/caishoubin/clickdesk/actions)
+[产品网站](https://caishoubin.github.io/clickdesk/) · [English documentation](README.md) · [下载最新版本](https://github.com/caishoubin/clickdesk/releases/latest) · [查看构建状态](https://github.com/caishoubin/clickdesk/actions)
 
 ## 直接使用
 
